@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPC Confession</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+
+        }
+        h1 {
+            color: greenyellow;
+            position: relative;
+            text-align: center;
+        }
+        .box {
+            width: 100vw;
+            align-items: center;
+            justify-content: center;
+            margin-top: 80px;
+            margin-left: auto;
+        }
+        #sendconf {
+            width: max-content;
+            margin-top: 20px;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #roll {
+            height: 40px;
+        }
+        #Roll {
+            height: 40px;
+        }
+        #conff {
+            height: 40px;
+        }
+        #retrieve {
+            margin-top: 100px;
+        }
+        .post {
+            background-color: black;
+            color: greenyellow;
+        }
+        .receive {
+            background-color: black;
+            color: greenyellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>SEND CONFESSIONS!!!</h1>
+        <form id="sendconf">
+            <div>
+            <label for="roll"></label>
+            <input
+            placeholder="Roll No."
+            size="100"
+            style="text-align: center;"
+            id="roll"
+            />
+            </div>
+            <div>
+                <label for="conff"></label>
+                <input
+                placeholder="Confession"
+                size="100"
+                style="text-align: center;"
+                id="conff"
+            </div>
+            <div style="text-align: center">
+                <button type="submit" class="post">POST!!!</button>
+              </div>
+      
+        </form>
+        <form class="retrieve">
+            <h1>RETRIEVE CONFESSIONS</h1>
+            <div>
+                <label for="Roll"></label>
+                <input
+                placeholder="Roll No."
+                size="100"
+                style="text-align: center;"
+                id="Roll"
+            />
+            </div>
+            <div style="text-align: center">
+                <button type="submit" class="receive">RETRIEVE!!!</button>
+              </div>
+      
+        </form>
+    </div>
+    <script>
+        document.getElementById("sendconf").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const rollNo = document.getElementById("roll").value;
+            const confession = document.getElementById("conff").value;
+            const FormData = {
+                roll_no: rollNo,
+                confession: confession,
+            };
+            fetch("https://tpcconfessions.onrender.com/api/postConfession", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(FormData),
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Network response error");
+                }
+                return response.json();
+            })
+            .then((newUserData) => {
+                console.log("New User Data:", newUserData);
+            })
+            .catch((error) => {
+                console.log("Error:", error);
+            });
+        });
+    
+        document.getElementsByClassName("retrieve")[0].addEventListener("submit", function (event) {
+            event.preventDefault();
+            const rollNo = document.getElementById("Roll").value;
+            fetch(`https://tpcconfessions.onrender.com/api/getConfession?roll_no=${rollNo}`)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                const Data = data;
+                console.log(data);
+                document.querySelector("#FetchConfession").innerText = Data[1].confession;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        });
+    </script>    
+</body>
+</html>
